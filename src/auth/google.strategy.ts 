@@ -1,0 +1,50 @@
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy, VerifyCallback, Profile } from 'passport-google-oauth20';
+import { AuthService } from './auth.service';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {
+    super({
+      clientID: configService.get<string>('GOOGLE_CLIENT_ID'),
+      clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET'),
+      callbackURL: configService.get<string>('GOOGLE_CALLBACK_URL'),
+      scope: ['email', 'profile'], // Request email and profile information
+    });
+  }
+
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+    done: VerifyCallback,
+  ): Promise<void> {
+    try {
+      const { id, emails, displayName, photos } = profile;
+
+      // Check if the profile has an email
+      if (!emails || emails.length === 0) {
+        return done(new Error('Google account does not have an email'), false);
+      }
+
+      // Validate or create the user using the AuthService
+      const user = await this.authService.validateGoogleUser({
+        googleId: id,
+        email: emails[0].value,
+        name: displayName,
+        avatar: photos?.[0]?.value || null, // Use optional chaining to safely access photos
+      });
+
+      // Pass the user to the request object
+      return done(null, user);
+    } catch (error) {
+      // Handle any errors that occur during validation
+      return done(error, false);
+    }
+  }
+}

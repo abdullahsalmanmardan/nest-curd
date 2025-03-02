@@ -97,3 +97,48 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+- /src
+  ├── /auth # Authentication module
+  │ ├── auth.module.ts # NestJS module setup
+  │ ├── auth.service.ts # Authentication logic (JWT, 2FA, Google, Reset Password)
+  │ ├── auth.controller.ts # Authentication routes
+  │ ├── auth.guard.ts # JWT authentication guard
+  │ ├── jwt.strategy.ts # JWT strategy for authentication
+  │ ├── google.strategy.ts # Google OAuth strategy
+  │ ├── dto
+  │ │ ├── login.dto.ts # DTO for user login
+  │ │ ├── reset-password.dto.ts # DTO for resetting password
+  │ │ ├── twofa.dto.ts # DTO for enabling/verifying 2FA
+  │ ├── interfaces
+  │ │ ├── auth.interface.ts # Interfaces for authentication
+  │
+  ├── /user # User module
+  │ ├── user.module.ts # User module setup
+  │ ├── user.service.ts # User service (handles DB operations)
+  │ ├── user.controller.ts # User controller (API endpoints)
+  │ ├── user.repository.ts # Custom queries for users
+  │ ├── user.entity.ts # User entity (database schema)
+  │ ├── dto
+  │ │ ├── create-user.dto.ts # DTO for user registration
+  │ │ ├── update-user.dto.ts # DTO for updating user details
+  │ │ ├── google-user.dto.ts # DTO for Google OAuth users
+  │ ├── interfaces
+  │ │ ├── user.interface.ts # Interfaces for user data
+  │
+  ├── /common # Common utilities
+  │ ├── email.service.ts # Email sending service (for password reset, verification)
+  │ ├── utils.ts # Helper functions (token generation, etc.)
+  │
+  ├── /config # Configuration files
+  │ ├── config.module.ts # Handles environment variables
+  │ ├── config.service.ts # Provides access to configurations
+  │
+  ├── main.ts # Entry point of the application
+  ├── app.module.ts # Root module of the application
+  ├── app.controller.ts # App-level controllers
+  ├── app.service.ts # App-level services
+  ├── .env # Environment variables (Google OAuth, JWT secret, etc.)
+  ├── tsconfig.json # TypeScript configuration
+  ├── package.json # Dependencies and scripts
+-
